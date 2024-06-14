@@ -22,7 +22,7 @@ install_requires=[
 
 setuptools.setup(
     name="img-resizer-journal",
-    version="0.0.1",
+    version="0.0.2",
     author="Simon Kojima",
     author_email="simon.kojima@outlook.com",
     description="python application for resizing image for publications.",

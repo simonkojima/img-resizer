@@ -3,8 +3,13 @@ import argparse
 
 from PIL import Image
 
-def get_file_list(dir):
-    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+def get_file_list(dir, extensions):
+    _files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+
+    files = list()
+    for file in _files:
+        if file.split(".")[1] in extensions:
+            files.append(file)
     
     return files
 
@@ -62,6 +67,9 @@ if __name__ == "__main__":
 
     # dpi
     dpi = args.dpi
+    
+    # extensions
+    exts = ["png", "jpeg", "jpg"]
 
     # save params
     # convert : RGB, RGBA, None
@@ -82,7 +90,7 @@ if __name__ == "__main__":
             
     mkdir(os.path.join(base_dir, "resized"))
           
-    files = get_file_list(base_dir)
+    files = get_file_list(base_dir, exts)
     
     main(base_dir = base_dir,
          files = files,
