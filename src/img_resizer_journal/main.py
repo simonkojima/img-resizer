@@ -8,7 +8,7 @@ def get_file_list(dir, extensions):
 
     files = list()
     for file in _files:
-        if file.split(".")[1] in extensions:
+        if file.split(".")[-1].lower() in extensions:
             files.append(file)
     
     return files
@@ -45,13 +45,20 @@ def main(base_dir,
         if convert is not None:
             img_resize = img_resize.convert(convert)
 
-        img_resize.save(os.path.join(base_dir, "resized", "%s.%s"%(file.split(".")[0], extention)), quality = quality)
+        fname = file.split(".")
+        fname.pop(len(fname)-1)
+        fname = '.'.join(fname)
+        
+        img_resize.save(os.path.join(base_dir, "resized", "%s.%s"%(fname, extention)), quality = quality)
     
     
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     
+    parser.add_argument('--dir',
+                        type = str,
+                        default = None)
     parser.add_argument('--width',
                         type = int,
                         default = 180,
@@ -78,9 +85,11 @@ if __name__ == "__main__":
     extention = "jpg"
     quality = 95
 
-    import tkinter, tkinter.filedialog
-
-    base_dir = tkinter.filedialog.askdirectory(initialdir=os.path.expanduser('~'), mustexist=True)
+    if args.dir is None:
+        import tkinter, tkinter.filedialog
+        base_dir = tkinter.filedialog.askdirectory(initialdir=os.path.expanduser('~'), mustexist=True)
+    else:
+        base_dir = args.dir
     print("target directory: %s"%(str(base_dir)))
 
     def mkdir(dir):
@@ -91,6 +100,11 @@ if __name__ == "__main__":
     mkdir(os.path.join(base_dir, "resized"))
           
     files = get_file_list(base_dir, exts)
+    if len(files) == 0:
+        raise RuntimeError("No files are found.")
+    print("The following files were found.")
+    for file in files:
+        print(file)
     
     main(base_dir = base_dir,
          files = files,
